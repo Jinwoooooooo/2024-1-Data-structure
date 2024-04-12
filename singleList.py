@@ -23,8 +23,23 @@ class SList:
         return str(lst)
 
 #------------------------------------------------------------------------------------
-    def remove(self):   #value값을 가진 노드를 리스트 연결에서 분리하여 반환한다.
-        
+    def remove(self, value):
+        현재노드 = self.head
+        이전노드 = None
+
+        while 현재노드 != None:
+            if 현재노드.data == value:
+                if 이전노드 == None:
+                    self.head = 현재노드.next
+                else:
+                    이전노드.next = 현재노드.next
+                self.count -= 1
+                return 현재노드
+            else:
+                이전노드 = 현재노드
+                현재노드 = 현재노드.next
+
+        return None
 #------------------------------------------------------------------------------------
     def insertFront(self, newNode):
         if self.head == None:      #비어 있는 리스트이므로, 첫 노드 추가 상황이 된다.
