@@ -1,6 +1,7 @@
 class Node:
     def __init__(self, data):
         self.data = data    #노드 생성하면서 넘겨준 값을 data 속성에 저장
+        self.prev = None
         self.next = None 
 
     def __str__(self):
@@ -49,6 +50,78 @@ class DList:
             self.tail = newNode
             self.count += 1
     #---------------------------------------------
+    # 리스트에서 targetNode 앞에 새 노드(value)를 추가한다.
+    def insertBefore(self, targetNode, value):
+        # targetNode가 None인 경우는 그냥 리턴한다.
+        if targetNode is None:
+            return
+        # Case 1. targetNode가 리스트의 head인 경우 (맨 앞의 노드인 경우)
+        if targetNode is self.head:
+            self.insertFront(value) # self.count += 1은 insertFront()에 이미 포함됨.
+        else:
+            # 먼저 새 노드를 생성
+            newNode = Node(value)
+            # 리스트 완성하기
+            newNode.next = targetNode
+            newNode.prev = targetNode.prev
+            targetNode.prev.next = newNode
+            targetNode.prev = newNode
+            self.count += 1
+    #---------------------------------------------
+    # 리스트의 targetNode 뒤에 새 노드(value)를 연결한다.
+    def insertAfter(self, targetNode, value):
+        # targetNode가 None인 경우는 그냥 리턴한다.
+        if targetNode is None:
+            return
+        
+        if targetNode is self.tail:
+            self.append(value)
+        else:
+            # 먼저 새 노드를 생성
+            newNode = Node(value)
+            # 리스트 완성하기
+            newNode.next = targetNode.next
+            newNode.prev = targetNode
+            targetNode.next.prev = newNode
+            targetNode.next = newNode
+            self.count += 1
+    #---------------------------------------------
+    # 오름 차순 정렬 상태를 유지하는 새 노드 (value)의 위치를 찾아서 추가한다.
+    # 현재의 리스트는 노드들이 정렬되어 있는 것으로 가정한다. (빈 리스트도 포함)
+    def insertSorted(self, value):
+        # 1. 빈 리스트인 경우 처리
+        if self.count == 0:
+            self.append(value)
+            return
+        # 2. 노드가 하나 이상 있는 경우
+        #value보다 크거나 같은 값을 가진 노드를 찾아서 그 노드 앞에 새 노드(value)를 추가한다.
+        current = self.head
+        while current is not None:
+            if current.data >= value:
+                self.insertBefore(current, value)
+                return
+            current = current.next
+        # 3. value보다 크거나 같은 노드가 없는 경우에는 리스트의 맨 뒤에 새 노드를 추가한다.
+        self.append(value)
+        
+
+    #---------------------------------------------
+    # 리스트에서 지정된 targetNode를 제거한다.
+    # del targetNode (노드 최종 삭제) -> 마지막 단계에서 실행.
+    def remove(self, targetNode):
+        pass
+
+    #---------------------------------------------
+    # value 값을 가진 노드를 찾아서 노드를 반환한다. 없으면 None 반환.
+    def find(self, value):
+        current = self.head # 헤드 노드부터 탐색 시작
+        while current is not None:
+            if current.data == value:
+                return current
+            else:
+                current = current.next
+        return None
+    #---------------------------------------------
     #리스트의 현재 연결 상태를 출력한다.
     def showList(self):
         print("[Head]=", end="")
@@ -62,10 +135,35 @@ class DList:
     #---------------------------------------------
 
 dlist = DList()
-dlist.insertFront(100)
-dlist.insertFront(200)
-dlist.insertFront(300)
-dlist.insertFront(400)
+dlist.append(100)
+dlist.append(200)
+dlist.append(300)
+dlist.append(400)
 dlist.append(500)
 dlist.append(600)
 dlist.showList()
+
+print(dlist.find(200))
+# ==== insertBefore ====
+n = dlist.find(200)
+dlist.insertBefore(n , 150)
+dlist.showList()
+n = dlist.find(400)
+dlist.insertBefore(n , 350)
+dlist.showList()
+
+# ==== insertAfter ====
+n = dlist.find(500)
+dlist.insertAfter(n , 550)
+dlist.showList()
+n = dlist.find(600)
+dlist.insertAfter(n , 650)
+dlist.showList()
+
+# ==== insertSorted ====
+dlist.insertSorted(250)
+dlist.insertSorted(450)
+dlist.insertSorted(0)
+dlist.insertSorted(50)
+dlist.showList()
+
