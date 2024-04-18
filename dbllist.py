@@ -109,7 +109,26 @@ class DList:
     # 리스트에서 지정된 targetNode를 제거한다.
     # del targetNode (노드 최종 삭제) -> 마지막 단계에서 실행.
     def remove(self, targetNode):
-        pass
+        current = self.head # 연결 리스트의 시작인 head 노드를 current에 할당
+
+        # 첫 번째 노드가 targetNode인 경우
+        if current.data == targetNode: # 현재 노드의 데이터가 대상 노드와 일치하는지 확인
+            self.head = current.next # 대상 노드가 첫 번째 노드인 경우, 헤드를 대상 노드의 다음 노드로 업데이트
+            if self.head: # 새로운 헤드가 존재하는 경우를 확인
+                self.head.prev = None # 새로운 헤드의 이전 링크를 None으로 설정하여 연결을 끊음
+                self.count -= 1
+            return
+
+        # 중간 또는 마지막 노드인 경우
+        while current:  # 현재 노드가 존재하는 동안 반복
+            if current.data == targetNode: # 현재 노드의 데이터가 대상 노드와 일치하는지 확인
+                if current.next: # 현재 노드의 다음 노드가 존재하는지 확인
+                    current.next.prev = current.prev # 대상 노드의 다음 노드의 이전 링크를 현재 노드의 이전 링크로 업데이트
+                if current.prev: # 현재 노드의 이전 노드가 존재하는지 확인
+                    current.prev.next = current.next # 대상 노드의 이전 노드의 다음 링크를 대상 노드의 다음 노드로 업데이트
+                    self.count -= 1
+                return
+            current = current.next
 
     #---------------------------------------------
     # value 값을 가진 노드를 찾아서 노드를 반환한다. 없으면 None 반환.
@@ -165,5 +184,9 @@ dlist.insertSorted(250)
 dlist.insertSorted(450)
 dlist.insertSorted(0)
 dlist.insertSorted(50)
+dlist.showList()
+
+dlist.remove(0)
+
 dlist.showList()
 
