@@ -116,7 +116,6 @@ class DList:
             self.head = current.next # 대상 노드가 첫 번째 노드인 경우, 헤드를 대상 노드의 다음 노드로 업데이트
             if self.head: # 새로운 헤드가 존재하는 경우를 확인
                 self.head.prev = None # 새로운 헤드의 이전 링크를 None으로 설정하여 연결을 끊음
-                self.count -= 1
             return
 
         # 중간 또는 마지막 노드인 경우
@@ -129,6 +128,33 @@ class DList:
                     self.count -= 1
                 return
             current = current.next
+
+    def remove2(self, targetNode):
+        if targetNode is None:  # 리스트에 노드가 1개만 있는 경우
+            return
+        if self.count == 1:
+            self.head = None
+            self.tail = None
+        elif targetNode is self.head:   # 헤더 노드를 삭제하는 경우
+            self.head = targetNode.next
+            targetNode.next.prev = None
+        elif targetNode is self.tail:   # 꼬리 노드를 삭제하는 경우
+            self.tail = targetNode.prev
+            targetNode.prev.next = None
+        else:
+            targetNode.prev.next = targetNode.next
+            targetNode.next.prev = targetNode.prev
+
+        del targetNode  # 노드 삭제
+        self.count -= 1
+
+    #---------------------------------------------
+    def isEmpty(self):
+        # 리스트가 비어있으면 true, 아니면 false 반환.
+        if self.count == 0:
+            return True
+        else:
+            return False
 
     #---------------------------------------------
     # value 값을 가진 노드를 찾아서 노드를 반환한다. 없으면 None 반환.
@@ -152,41 +178,4 @@ class DList:
 
         print("[Total {} Nodes]".format(self.count))
     #---------------------------------------------
-
-dlist = DList()
-dlist.append(100)
-dlist.append(200)
-dlist.append(300)
-dlist.append(400)
-dlist.append(500)
-dlist.append(600)
-dlist.showList()
-
-print(dlist.find(200))
-# ==== insertBefore ====
-n = dlist.find(200)
-dlist.insertBefore(n , 150)
-dlist.showList()
-n = dlist.find(400)
-dlist.insertBefore(n , 350)
-dlist.showList()
-
-# ==== insertAfter ====
-n = dlist.find(500)
-dlist.insertAfter(n , 550)
-dlist.showList()
-n = dlist.find(600)
-dlist.insertAfter(n , 650)
-dlist.showList()
-
-# ==== insertSorted ====
-dlist.insertSorted(250)
-dlist.insertSorted(450)
-dlist.insertSorted(0)
-dlist.insertSorted(50)
-dlist.showList()
-
-dlist.remove(0)
-
-dlist.showList()
 
