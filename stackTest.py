@@ -39,17 +39,38 @@ def checkParenthese(st):
 #수식 문자열(괄호 포함)을 입력받아 연산자(+, -, *, /), 괄호("()"), 피연산자 등으로
 #구분하여 토근 리스트로 만들어 반환한다.
 def toTokens(strInput):
-    a = "0123456789"
-    b = "+-*/"
-    c = "()"
-    tokenList = []
-    if uinput in a or b or c:
-        tokenList = uinput
+    tokens = []
+    current_token = ''
+
+    for char in strInput:
+        if char in ['+', '-', '*', '/']:
+            # 연산자일 경우 현재 토큰을 추가하고 연산자도 추가.
+            if current_token:
+                tokens.append(current_token)
+                current_token = ''
+            tokens.append(char)
+        elif char in ['(', ')']:
+            # 괄호일 경우 현재 토큰을 추가하고 괄호도 추가.
+            if current_token:
+                tokens.append(current_token)
+                current_token = ''
+            tokens.append(char)
+        else:
+            # 피연산자일 경우 현재 토큰에 추가.
+            current_token += char
+    
+    # 마지막으로 현재 토큰을 추가.
+    if current_token:
+        tokens.append(current_token)
+    
+    return tokens
 
 
 #=========================================================
 teststr = "(<>{[{]})"
 print(checkParenthese(teststr))
+
+print(toTokens("323   *(4+5)-6/2"))
 
 # l[0] in "({["
 
