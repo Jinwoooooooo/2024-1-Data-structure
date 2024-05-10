@@ -1,4 +1,5 @@
 from stack import *
+from queue2 import *
 
 st = Stack()
 
@@ -65,12 +66,70 @@ def toTokens(strInput):
     
     return tokens
 
-
 #=========================================================
-teststr = "(<>{[{]})"
-print(checkParenthese(teststr))
+#중위표기법으로 된 수식 문자열을 입력받고
+#   후위표기법으로 변환된 Queue를 반환한다.
+def infix2Postfix(strInput):
+    ops = "+-*/"
+    priority = {"*": 3, "/": 3, "+": 2, "-": 2, "(": 1, ")": 1}
+    
+    #중위표기법 문자열을 토근 단위로 구분한다.
+    tokenList = toTokens(strInput)
+    #변환에 사용할 스택과 큐(출력용)를 생성한다.
+    stack = Stack()
+    queue = Queue()
+    
+    #tokenList에서 하나씩 차례대로 가져와서 처리한다.
+    while tokenList:    #tokenList에 항목이 남이 있으면 반복한다.
+        token = tokenList.pop(0)    #맨 앞의 항목을 하나 가져온다.
+        if token.isdigit():         #token이 피연산자이면
+            queue.add(token)         #Queue에 출력한다.
+        elif token == "(":          #token이 왼쪽 괄호이면
+            stack.push(token)           #stack에 저장
+        elif token == ")":          #token이 오른쪽 괄호이면
+            while stack.peek() != "(":  #stack에서 왼쪽 괄호를 만날 떄까지
+                queue.add(stack.pop())  #pop하여 바로 출력(queue에)
+            stack.pop()             #스택의 맨 위에 있는 왼쪽 괄호는 버린다.
+        else:                       #연산자의 경우
+            if stack.isEmpty():     #만일, 스택이 비어있는 경우
+                stack.push(token)       #스택에 현재 연산자(token)를 저장한다.
+            else:
+                while not stack.isEmpty():
+                    if priority[stack.peek()] >= priority[token]:   #스택에서 현재 연산자의 우선순위보다 낮은 연산자를 만날 때까지
+                        queue.add(stack.pop())                          #스택에서 꺼내어 출력한다.
+                    else:
+                        break
+                stack.push(token)   #현재 연산자는 스택에 저장한다.
+    #입력 토근들을 모두 처리한 후에 스택에 남아 있는 것들을 모두 출력한다.
+    while not stack.isEmpty:    #스택이 비어있지 않으면 
+        queue.add(stack.pop())
 
-print(toTokens("323   *(4+5)-6/2"))
+    #최종 결과물(후위 표기법 순서로 저장된 Queue)을 반환한다.
+    return queue
+#=========================================================
+#스택 계산기 (stack calculator)
+#입력: 후위 표기법으로 정리된(토큰들로 구성된) queue
+#출력: 계산결과값(number)
+#=========================================================
+def stackCalc(q):
+    stack = Stack() #계산용 스택 생성
+
+    ops = "+-*/"
+    
+    while not q.isEmpty():
+        q.remove()
+        if token.isdigit():
+            q.pop()
+            q.pop()
+        
+        
+#=========================================================
+
+print(infix2Postfix("23 + 34 * 123"))
+# teststr = "(<>{[{]})"
+# print(checkParenthese(teststr))
+
+# print(toTokens("323*(4+5)-6/2"))
 
 # l[0] in "({["
 
