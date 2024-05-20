@@ -47,14 +47,14 @@ def toTokens(strInput):
         ch = chList.pop(0)          # chList의 맨 앞에 있는 글자를 가져온다.
         if ch in ops:               # 한 문자로 된 토큰(연산자, 괄호)이면 
             tokenList.append(ch)    #   반환할 변수 tokenList에 저장한다.
-        elif ch.isdigit():          # 현재 문자가 숫자이면
+        elif ch.isdigit() or ch == ".":          # 현재 문자가 숫자이면
             numToken += ch          #   numToken 변수에 누적 시작
             while chList:           # chList에서 digit가 아닌 문자를 만날때까지 반복한다.
-                if chList[0].isdigit(): # chList의 첫 문자가 digit이면
+                if chList[0].isdigit() or chList[0] == ".": # chList의 첫 문자가 digit이면
                     numToken += chList.pop(0)   # 꺼내서 numToken에 누적시킨다.
                 else:
                     break           # 숫자 누적처리를 중단하고 다음으로 넘어간다.
-            tokenList.append(numToken)  # 그동안 누적시킨 number 문자열을 토큰으로 저장한다.
+            tokenList.append(float(numToken))  # 그동안 누적시킨 number 문자열을 토큰으로 저장한다.
             numToken = ""           # 다음 수를 수집하기 위해 numToken 값은 빈 문자열로 초기화 한다.
         else:
             continue
@@ -77,7 +77,7 @@ def infix2Postfix(strInput):
     #tokenList에서 하나씩 차례대로 가져와서 처리한다.
     while tokenList:    # tokenList에 항목이 남아 있으면 반복한다.
         token = tokenList.pop(0)    # 맨 앞의 항목을 하나 가져온다.
-        if token.isdigit():         # token이 피연산자(수)이면
+        if type(token) == type(1.1):         # token이 피연산자(수)이면
             queue.add(token)     #   queue에 출력한다.
         elif token == "(":          # token이 왼쪽 괄호이면
             stack.push(token)       #   stack에 저장
@@ -109,28 +109,48 @@ def stackCalc(q):
     while not q.isEmpty():
         token = q.remove()
 
-
-        if token.isdigit():
-            stack.push(int(token))
-
-        elif token in "+-*/":
-
-            op2 = stack.pop()
-            op1 = stack.pop()
+        if type(token) == type(""):
+            b = stack.pop()
+            a = stack.pop()
 
             if token == '+':
-                result = op1 + op2
+                stack.push(a + b)
             elif token == '-':
-                result = op1 - op2
+                stack.push(a - b)
             elif token == '*':
-                result = op1 * op2
+                stack.push(a * b)
             elif token == '/':
-                result = op1 / op2  
-            stack.push(result)
+                stack.push(a / b)
+        else:
+            stack.push(token)
 
     return stack.pop()
 
+        #큐에서 꺼낸 현재 토큰이 피연산자(수)이면 무조건 스택에 저장한다.
+#        if token.isdigit():
+#            stack.push(int(token))  #문자열 형식의 토큰을 number 형식으로 변환하여 저장한다.
+
+#        elif token in "+-*/":   #토큰이 피연산자가 아니면 모두 연산자이므로 종류별로 처리한다.
+
+#            op2 = stack.pop()
+#            op1 = stack.pop()
+
+#           if token == '+':
+#                result = op1 + op2
+#            elif token == '-':
+#                result = op1 - op2
+#            elif token == '*':
+#                result = op1 * op2
+#            elif token == '/':
+#                result = op1 / op2  
+#            stack.push(result)
+
+#    return stack.pop()
+
 #==============================================================================
 
-teststr = "232 * (  43+ 456 / 345 )"
-print(infix2Postfix(teststr))
+#teststr = "232 * (  43+ 456 / 345 )"
+teststr = "100.0 / 20.0"
+qPost = infix2Postfix(teststr)
+print(stackCalc(qPost))
+#print(toTokens(teststr))

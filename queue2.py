@@ -18,7 +18,7 @@ class Queue(DList):
             raise QueueUnderFlow("Queue is Empty!")
         else:
             returnValue = self.head.data
-            self.remove(self.head)
+            super().remove(self.head)   #Queue의 remove()가 아닌 DList의 remove()를 호출한다.
             return returnValue
     
     
