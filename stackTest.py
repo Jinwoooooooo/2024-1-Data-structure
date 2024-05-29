@@ -103,54 +103,44 @@ def infix2Postfix(strInput):
     # 최종 결과물(후위 표기법 순서로 저장된 queue)을 반환한다.
     return queue
 #==============================================================================
+# 스택 계산기 (stack calculator)
+# 입력: 후위 표기법으로 정리된(토큰들로 구성된) queue
+# 출력: 계산결과값(number)
+#==============================================================================
 def stackCalc(q):
     stack = Stack() # 계산용 스택 생성
 
     while not q.isEmpty():
         token = q.remove()
-
-        if type(token) == type(""):
+        
+        if type(token) == type(" "):
             b = stack.pop()
-            a = stack.pop()
-
-            if token == '+':
-                stack.push(a + b)
-            elif token == '-':
-                stack.push(a - b)
-            elif token == '*':
-                stack.push(a * b)
-            elif token == '/':
-                stack.push(a / b)
+            a = stack.pop() 
+            if token == "+":
+                stack.push(a+b)
+            elif token == "-":
+                stack.push(a-b)
+            elif token == "*":
+                stack.push(a*b)
+            else: 
+                stack.push(a/b)
         else:
             stack.push(token)
 
+    # 스택에 남아 있는 최종 연산 결과를 반환한다.
     return stack.pop()
+        
 
-        #큐에서 꺼낸 현재 토큰이 피연산자(수)이면 무조건 스택에 저장한다.
-#        if token.isdigit():
-#            stack.push(int(token))  #문자열 형식의 토큰을 number 형식으로 변환하여 저장한다.
 
-#        elif token in "+-*/":   #토큰이 피연산자가 아니면 모두 연산자이므로 종류별로 처리한다.
 
-#            op2 = stack.pop()
-#            op1 = stack.pop()
-
-#           if token == '+':
-#                result = op1 + op2
-#            elif token == '-':
-#                result = op1 - op2
-#            elif token == '*':
-#                result = op1 * op2
-#            elif token == '/':
-#                result = op1 / op2  
-#            stack.push(result)
-
-#    return stack.pop()
-
-#==============================================================================
 
 #teststr = "232 * (  43+ 456 / 345 )"
-teststr = "100.0 / 20.0"
+teststr = "100 / 20.123"
 qPost = infix2Postfix(teststr)
 print(stackCalc(qPost))
+
 #print(toTokens(teststr))
+
+
+
+
