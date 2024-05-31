@@ -1,3 +1,4 @@
+import random
 from queue2 import *    # BTree의 levelOrder() 등에서 활용하기 위해 가져옴.
 
 #============================================
@@ -143,68 +144,75 @@ class BTree:
 
     #------------------------------------
 #============================================
-tA = BTree("A")
-tB = BTree("B")
-tC = BTree("C")
-tD = BTree("D")
-tE = BTree("E")
-tF = BTree("F")
-tG = BTree("G")
-tH = BTree("H")
-tI = BTree("I")
-tJ = BTree("J")
-#---------------------
-tA.left = tB
-tA.right = tC
-tB.left = tD
-tB.right = tE
-tD.left = tI
-tD.right = tG
-tE.left = tH
-tC.right = tF
-tC.left = tJ
-print(tA.toList())
+# 이진 힙(Binary Heap) 구현하기
+#--------------------------------------------
+# 최소 힙(Minimum Heap): 값이 작을수록 우선순위가 높다.
+class BHeap:
+    #----------------------------------------
+    # 힙을 구성할 배열(list)를 초기값으로 받는다.
+    def __init__(self, a):
+        self.a = a  # 힙용 배열(list)
+        self.N = len(a) - 1 # 배열의 첫 칸(index=0)은 사용하지 않기 때문에.
 
+    def __str__(self):
+        return str(self.a)
 
-#---------------------
-"""
-tA.left = tB
-tA.right = tC
-tB.left = tD
-tB.right = tE
-tD.right = tG
-tE.left = tH
-tC.right = tF
-#----------------------
-treeList = tA.toList()
+    # index i 노드의 자기 위치를 찾아 내려가도록 하는 연산.
+    def downHeap(self, i):
+        while 2*i <= self.N:
+            k = 2*i
+            if k < self.N and self.a[k] > self.a[k+1]:  # 오른쪽 자식이 왼쪽 자식보다 우선순위가 높으므로
+                k += 1 # 부모 i와 비교할 자식으로 오른쪽 자식으로 수정.
+            if self.a[i] < self.a[k]:   # 자식 둘 중의 승자와 부모와의 비교에서 부모의 우선순위가 높다.
+                break   # 하강 중단.
+            # 부모보다 우선순위가 높은 자식이 결정되었으므로, 자리를 서로 바꾼다.
+            self.a[i], self.a[k] = self.a[k], self.a[i]
+            i = k   # downHeap 계속 진행
 
-print("Tree A의 높이는 %d입니다."%(tA.height()))
-print("Tree B의 높이는 %d입니다."%(tB.height()))
-"""
+    def createHeap(self):
+        for i in range(self.N//2, -1):
+            self.downHeap(i)
 
+#============================================
+randMax = 50
+random.seed(2024)
+root = BTree(random.randint(1, randMax))
 
+queue = Queue()
+queue.add(root)
+nodeCount = 1
 
+while not queue.isEmpty():
+    node = queue.remove()
+    leftChild = BTree(random.randint(1, randMax))
+    rightChild = BTree(random.randint(1, randMax))
+    node.left = leftChild
+    node.right = rightChild
+    queue.add(leftChild)
+    queue.add(rightChild)
+    nodeCount += 2
 
+    if nodeCount > 7:
+        break
+#---------------------------------
+# queue 남은 노드들에 대해서만 자식 노드들을 연결한다.
+while not queue.isEmpty():
+    node = queue.remove()
+    leftChild = BTree(random.randint(1, randMax))
+    rightChild = BTree(random.randint(1, randMax))
+    node.left = leftChild
+    node.right = rightChild
 
+#print("Height: {}, Nodes: {}".format(root.height(), root.nodeCount()))
+#print("is Complete? {}".format(root.isComplete()))
+#lst = root.toList()
+#print("List Length: %d\n"%(len(lst)))
 
-
-"""
-tA.levelOrder()
-
-print("전위 순회(%9s):"%("preOrder"), end="")
-tA.preOrder()
-print("")
-
-print("중위 순회(%9s):"%("inOrder"), end="")
-tA.inOrder()
-print("")
-
-print("후위 순회(%9s):"%("postOrder"), end="")
-tA.postOrder()
-print("")
-"""
-
-
+lst = root.toList() # 힙용 배열 생성 (완전 이진 트리를 변환., 노드의 값이 우선순위.)
+heap = BHeap(lst)
+print(heap)
+heap.createHeap()
+print(heap)
 
 
 
