@@ -153,6 +153,7 @@ class BHeap:
     def __init__(self, a):
         self.a = a  # 힙용 배열(list)
         self.N = len(a) - 1 # 배열의 첫 칸(index=0)은 사용하지 않기 때문에.
+        self.createHeap()
 
     def __str__(self):
         return str(self.a)
@@ -169,10 +170,36 @@ class BHeap:
             self.a[i], self.a[k] = self.a[k], self.a[i]
             i = k   # downHeap 계속 진행
 
+    # index j 노드의 자기 위치를 찾아 올라가도록 하는 연산
+    def upHeap(self, j):
+        while j > 1 and self.a[j//2] > self.a[j]: # 위로 올라갈 수 있는 두 가지 조건이 만족 되면
+            self.a[j//2], self.a[j] = self.a[j], self[j//2]
+            j = j // 2
+
     def createHeap(self):
-        for i in range(self.N//2, -1):
+        for i in range(self.N//2, 0, -1):
             self.downHeap(i)
 
+    # 이진 힙에서 우선순위가 가장 높은 (다음 출력할 값) 값을 꺼낸다.
+    def delete(self):
+        if self.N == 0: # 힙이 비어 있으므로
+            print("Empty Heap!")
+            return None
+        returnValue = self.a[1] # 이진 힙에서 출력할 값은 항상 1번 항목.(우선순위가 가장 높기 때문에)
+
+        self.a[1], self.a[-1] = self.a[-1], self.a[1]   # 루트와 마지막 노드의 값을 일단 서로 맞바꾼다.
+        self.N -= 1
+        del self.a[-1]  # 루트에서 마지막 위치로 옮겨진 노드를 삭제한다.
+        self.downHeap(1)    # 루트로 올라간 마지막 노드의 제자리 찾기(downHeap) 실행
+        return returnValue
+    
+    # 최소힙에 새 값을 추가한다.
+    def insert(self, value):
+        # 1. 현재 힙의 마지막에 새 값을 추가한다.
+        self.a.append(value)
+        self.N += 1
+        # 2. 추가한 노드에 대해서 upHeap을 실행한다.
+        self.upHeap(self.N - 1)
 #============================================
 randMax = 50
 random.seed(2024)
@@ -211,7 +238,11 @@ while not queue.isEmpty():
 lst = root.toList() # 힙용 배열 생성 (완전 이진 트리를 변환., 노드의 값이 우선순위.)
 heap = BHeap(lst)
 print(heap)
-heap.createHeap()
+print("delete value: [{}]".format(heap.delete()))
+print(heap)
+heap.insert(10)
+print(heap)
+heap.insert(17)
 print(heap)
 
 
