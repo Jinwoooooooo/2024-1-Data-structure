@@ -1,6 +1,5 @@
 import random
 from queue2 import *    # BTree의 levelOrder() 등에서 활용하기 위해 가져옴.
-from btree import *
 
 #============================================
 # class BTree (Binary Tree: 이진트리)
@@ -38,16 +37,16 @@ class BTree:
     #------------------------------------
     def inOrder(self):  # 왼쪽 서브트리 출력 후, 자신 출력, 오른쪽 서브트리 출력
         if self.left:
-            self.left.inOrder()
+            self.left.preOrder()
         print(self, " ", end="")
         if self.right:
-            self.right.inOrder()
+            self.right.preOrder()
     #------------------------------------
     def postOrder(self):    # 왼쪽 서브트리 출력, 오른쪽 서브트리 출력, 마지막에 자신 출력
         if self.left:
-            self.left.postOrder()
+            self.left.preOrder()
         if self.right:
-            self.right.postOrder()
+            self.right.preOrder()
         print(self, " ", end="")
     #------------------------------------
     # 트리의 레벨 순서대로 출력, 같은 레벨에서는 왼쪽에서 오른쪽 순서로 출력
@@ -231,7 +230,20 @@ while not queue.isEmpty():
     node.left = leftChild
     node.right = rightChild
 
+#print("Height: {}, Nodes: {}".format(root.height(), root.nodeCount()))
+#print("is Complete? {}".format(root.isComplete()))
+#lst = root.toList()
+#print("List Length: %d\n"%(len(lst)))
 
+lst = root.toList() # 힙용 배열 생성 (완전 이진 트리를 변환., 노드의 값이 우선순위.)
+heap = BHeap(lst)
+print(heap)
+print("delete value: [{}]".format(heap.delete()))
+print(heap)
+heap.insert(10)
+print(heap)
+heap.insert(17)
+print(heap)
 
 
 
